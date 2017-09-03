@@ -7,7 +7,7 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/golang/protobuf/jsonpb"
+	"github.com/ContextLogic/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 )
 
