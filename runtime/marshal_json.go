@@ -1,8 +1,9 @@
 package runtime
 
 import (
-	"encoding/json"
 	"io"
+
+	json "github.com/json-iterator/go"
 )
 
 // JSONBuiltin is a Marshaler which marshals/unmarshals into/from JSON

@@ -2,10 +2,11 @@ package runtime
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"reflect"
+
+	json "github.com/json-iterator/go"
 
 	"github.com/ContextLogic/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
