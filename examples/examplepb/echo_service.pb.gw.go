@@ -12,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/ContextLogic/grpc-gateway/runtime"
+	"github.com/ContextLogic/grpc-gateway/utilities"
 	"github.com/golang/protobuf/proto"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

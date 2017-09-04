@@ -6,9 +6,9 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/ContextLogic/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/ContextLogic/grpc-gateway/utilities"
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 )
 
 type param struct {
@@ -147,7 +147,7 @@ var _ = utilities.NewDoubleArray
 {{if .Method.GetServerStreaming}}
 func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.GetName}}Client, req *http.Request, pathParams map[string]string) ({{.Method.Service.GetName}}_{{.Method.GetName}}Client, runtime.ServerMetadata, error)
 {{else}}
-func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.GetName}}Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error)
+func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, server {{.Method.Service.GetName}}Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error)
 {{end}}`, "\n", "", -1)))
 
 	_ = template.Must(handlerTemplate.New("client-streaming-request-func").Parse(`
@@ -248,7 +248,7 @@ var (
 	metadata.HeaderMD = header
 	return stream, metadata, nil
 {{else}}
-	msg, err := client.{{.Method.GetName}}(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := server.{{.Method.GetName}}(ctx, &protoReq)
 	return msg, metadata, err
 {{end}}
 }`))
@@ -312,7 +312,7 @@ var (
 {{range $svc := .Services}}
 // Register{{$svc.GetName}}HandlerFromEndpoint is same as Register{{$svc.GetName}}Handler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -332,12 +332,12 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 		}()
 	}()
 
-	return Register{{$svc.GetName}}Handler(ctx, mux, conn)
+	return Register{{$svc.GetName}}Handler(ctx, mux, server, conn)
 }
 
 // Register{{$svc.GetName}}Handler registers the http handlers for service {{$svc.GetName}} to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server, conn *grpc.ClientConn) error {
 	client := New{{$svc.GetName}}Client(conn)
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
@@ -363,7 +363,11 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
+		{{if $m.GetServerStreaming}}
 		resp, md, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, client, req, pathParams)
+		{{else}}
+		resp, md, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, server, req, pathParams)
+		{{end}}
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

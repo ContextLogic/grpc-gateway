@@ -8,13 +8,13 @@ import (
 
 	json "github.com/json-iterator/go"
 
+	"github.com/ContextLogic/grpc-gateway/examples/examplepb"
+	"github.com/ContextLogic/grpc-gateway/runtime"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
 func TestJSONBuiltinMarshal(t *testing.T) {

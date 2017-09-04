@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
+	"github.com/ContextLogic/grpc-gateway/examples/server"
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/server"
 )
 
 func main() {
