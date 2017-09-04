@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	json "github.com/json-iterator/go"
+	json "github.com/ContextLogic/go"
 
 	"github.com/ContextLogic/grpc-gateway/examples/examplepb"
 	"github.com/ContextLogic/grpc-gateway/runtime"

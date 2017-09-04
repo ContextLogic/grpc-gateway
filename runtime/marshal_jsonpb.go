@@ -6,7 +6,7 @@ import (
 	"io"
 	"reflect"
 
-	json "github.com/json-iterator/go"
+	json "github.com/ContextLogic/go"
 
 	"github.com/ContextLogic/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"

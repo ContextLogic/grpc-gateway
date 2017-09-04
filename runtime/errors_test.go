@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	json "github.com/json-iterator/go"
+	json "github.com/ContextLogic/go"
 
 	"github.com/ContextLogic/grpc-gateway/runtime"
 	"golang.org/x/net/context"
